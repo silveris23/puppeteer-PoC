@@ -21,6 +21,17 @@
  2. 동일
  3. 도커이미지 만들기 `docker build -t puppeteer-chrome-linux .`
  4. 도커이미지를 다만든후 도커 프로세스를 띄우고 실행 스크립트 `run.sh`
+ 5. 도커 프로세스 이름을 다르게 주면 같은 프로세스를 여러개 띄워서 실행이 가능하다 
+ 
+> 
+```
+docker run -i --rm --cap-add=SYS_ADMIN --name puppeteer-chrome1 puppeteer-chrome-linux node -e "`cat app.js`"
+docker run -i --rm --cap-add=SYS_ADMIN --name puppeteer-chrome2 puppeteer-chrome-linux node -e "`cat app.js`"
+docker run -i --rm --cap-add=SYS_ADMIN --name puppeteer-chrome3 puppeteer-chrome-linux node -e "`cat app.js`"
+docker run -i --rm --cap-add=SYS_ADMIN --name puppeteer-chrome4 puppeteer-chrome-linux node -e "`cat app.js`"
+docker run -i --rm --cap-add=SYS_ADMIN --name puppeteer-chrome5 puppeteer-chrome-linux node -e "`cat app.js`"
+
+``` 
 
 > 주의!! app.js 외 다른 파일이 변경되었을 경우(레디스 접속정보등) 위의 3번 이미지생성부터 다시한다 
 또한 레디스 저장소 위치는 로컬호스트가 될수없다.  (도커호스트안에서 실행 되기때문에 '로컬호스트'가 호스트를 의미하지 않음) 
