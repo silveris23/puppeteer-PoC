@@ -1,0 +1,11 @@
+{
+  "redisConfig": {
+    "host": "211.180.114.87",
+    "port": 6380
+  },
+
+  "param": {
+    "total": 33414,
+    "pageSize": 100
+  }
+}

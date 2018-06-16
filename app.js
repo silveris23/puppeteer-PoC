@@ -1,49 +1,48 @@
 const puppeteer = require('puppeteer');
 
-const redis = require('redis');
-const {promisify} = require('util');
 
+const connectInfo = require('./config').redisConfig;
+
+const client = require('./redisHelper').init(connectInfo);
 //https://github.com/NodeRedis/node_redis
 
-const connectInfo = {
 
-    host: '211.180.114.87',
-    port: 6380
+const init = async (param) => {
 
+    const l = param.length || 33414;
+    const p = param.pageSize || 100;
+
+    const pageSize = l/p;
+    console.log("Index Count : ", pageSize);
+
+    for( var i = 1 ; i < pageSize + 1; i++) {
+        await client.saddAsync("drug", i);
+        console.log(i);
+    }
+    console.log("init finished");
 };
-
-const redisClient = redis.createClient(connectInfo);
-
-
-
 
 (async() => {
 
+    console.log("===== START =====");
 
-    redisClient.on('connect', function () {
-        console.log('connected to redis!!');
-    });
+    let remain = await client.scardAsync('drug');
 
+    const param = require('./config').param;
 
-    redisClient.on("error", function (err) {
-        console.log("Error " + err);
-    });
+    if (remain == 0) await init(param);
 
-    const spopAsync = promisify(redisClient.spop).bind(redisClient);
-    const saddAsync = promisify(redisClient.sadd).bind(redisClient);
-    const scardAsync = promisify(redisClient.scard).bind(redisClient);
-
-
-    const browser = await puppeteer.launch({args: ['--no-sandbox']});
+    //headless = true : 브라우저 안보임 false : 보임
+    const browser = await puppeteer.launch({args: ['--no-sandbox'], headless: true});
     const page = await browser.newPage();
     let end = false;
 
-    let remain = await scardAsync('drug');
+    remain = await client.scardAsync('drug');
     if(remain > 0) end = true;
 
     while (end) {
 
-        let index = await spopAsync('drug');
+        let index = await client.spopAsync('drug');
         console.log('index : ', index);
 
         await page.goto(`http://www.health.kr/searchDrug/result_detailmore.asp?input_drug_nm=&search_sunb1=&search_sunb2=&search_sunb3=&search_drugnm_initial=%2C+%2C+%2C+%2C+%2C+%2C+%2C+%2C+%2C+%2C+%2C+%2C+%2C+&drug_nm_mode=field&drug_nm=&sunb_equals1=&sunb_equals2=&sunb_equals3=&sunb_where1=and&sunb_where2=and&input_upsoNm=&search_effect=&cbx_sunbcnt=0&cbx_sunbcnt_mode=0&cbx_bohtype=%2C+%2C+%2C+&cbx_bohtype_mode=0&cbx_class=0%2C+%2C+%2C+&cbx_class_mode=0&search_bohcode=&anchor_dosage_route_hidden=&anchor_form_info_hidden=&mfds_cd=&mfds_cdword=&cbx_narcotic=%2C+%2C+%2C+%2C+&cbx_narcotic_mode=0&kpic_atc_nm=&kpic_atc_nm_opener=&atccode_name=&atccode_val=&atccode_val_opener=&input_hiraingdcd=&cbx_bio=%2C+%2C+%2C+&cbx_bio_mode=0&icode=&fixed_cnt=33414&search_detail=Y&TabState=0&proYN=Y&pageNo=${index}&rowLength=100&inner_search_word=&inner_search_flag=drug_name&viewmode=&listup=10&more=`,
@@ -91,8 +90,8 @@ const redisClient = redis.createClient(connectInfo);
 
         console.log(data);
 
-        await saddAsync('drugInfo', JSON.stringify(data));
-        let remain = await scardAsync('drug');
+        await client.saddAsync('drugInfo', JSON.stringify(data));
+        let remain = await client.scardAsync('drug');
         if(remain === 0) end = false;
 
     }

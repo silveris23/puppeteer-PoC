@@ -27,7 +27,8 @@ RUN chmod +x /usr/local/bin/dumb-init
 
 # Install puppeteer so it's available in the container.
 RUN npm i puppeteer
-RUN npm i redis 
+RUN npm i redis
+COPY . .
 
 # Add user so we don't need --no-sandbox.
 RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \

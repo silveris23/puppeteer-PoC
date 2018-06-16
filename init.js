@@ -1,39 +1,6 @@
-const redis = require('redis');
-const {promisify} = require('util');
-const redisClient = redis.createClient({host: '211.180.114.87', port: 6380});
 
 
-
-redisClient.on('connect', function () {
-    // console.log('connected to redis!!');
-});
-
-redisClient.on("error", function (err) {
-    console.log("Error " + err);
-});
-const setAsync = promisify(redisClient.set).bind(redisClient);
-const getAsync = promisify(redisClient.get).bind(redisClient);
-const hlenAsync = promisify(redisClient.hlen).bind(redisClient);
-const hgetAsync = promisify(redisClient.hget).bind(redisClient);
-const spopAsync = promisify(redisClient.spop).bind(redisClient);
-const saddAsync = promisify(redisClient.sadd).bind(redisClient);
-const scardAsync = promisify(redisClient.scard).bind(redisClient);
-const hsetAsync = promisify(redisClient.hset).bind(redisClient);
-const smembersAsync = promisify(redisClient.smembers).bind(redisClient);
-
-const main = async (length,cntPerPage) => {
-
-
-    const pageSize = length/cntPerPage;
-    console.log("size : ", pageSize);
-
-    for( var i = 1 ; i < pageSize + 1; i++) {
-        await saddAsync("drug", i);
-        console.log(i);
-    }
-    console.log("exit");
-    process.exit(1);
-};
+const connectInfo = require('./config');
 
 
 
