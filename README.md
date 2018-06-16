@@ -15,6 +15,8 @@
 
 ### 도커로 서버에서 실행
 >당연히 도커는 서버에 설치되어 있어야 한다. 
+
+
  1. 동일
  2. 동일
  3. 도커이미지 만들기 `docker build -t puppeteer-chrome-linux .`
