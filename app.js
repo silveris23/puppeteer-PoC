@@ -7,8 +7,6 @@ const {promisify} = require('util');
 
 const connectInfo = {
 
-    // host: '127.0.0.1',
-    // port: 6379
     host: '211.180.114.87',
     port: 6380
 

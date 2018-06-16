@@ -18,3 +18,4 @@ node app.js
 node init
 
 ```
+https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md

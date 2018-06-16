@@ -1,6 +1,6 @@
 const redis = require('redis');
 const {promisify} = require('util');
-const redisClient = redis.createClient({});
+const redisClient = redis.createClient({host: '211.180.114.87', port: 6380});
 
 
 
@@ -8,11 +8,10 @@ redisClient.on('connect', function () {
     // console.log('connected to redis!!');
 });
 
-
 redisClient.on("error", function (err) {
     console.log("Error " + err);
 });
-
+const setAsync = promisify(redisClient.set).bind(redisClient);
 const getAsync = promisify(redisClient.get).bind(redisClient);
 const hlenAsync = promisify(redisClient.hlen).bind(redisClient);
 const hgetAsync = promisify(redisClient.hget).bind(redisClient);
@@ -53,7 +52,7 @@ const getAll = async () => {
         }
     );
 
-    console.log(JSON.stringify(ret));
+    await setAsync("drugResult",JSON.stringify(ret));
 
 
     // console.log("exit");
