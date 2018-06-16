@@ -4,7 +4,9 @@
 
 - 수집하여 redis를 저장소로 사용
 - 실행방법 
-```$shell
+
+
+```
 
 npm install
 
