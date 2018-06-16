@@ -30,20 +30,15 @@
 
 npm install
 
-
-
-# node app 전체개수  페이지사이즈 
-# node app.js 34414 100
-
-docker run -i --rm --cap-add=SYS_ADMIN --name puppeteer-chrome puppeteer-chrome-linux node -e "`cat app.js`"
-
-
+node app.js 
 
 #get 
 node get
 
 #docker build image
 docker build -t puppeteer-chrome-linux .
+#docker run
+docker run -i --rm --cap-add=SYS_ADMIN --name puppeteer-chrome puppeteer-chrome-linux node -e "`cat app.js`"
 
 ```
 
